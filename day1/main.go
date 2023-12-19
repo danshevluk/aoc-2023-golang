@@ -40,15 +40,18 @@ func main() {
 	fmt.Println("Calibration values total:", calibrationValuesTotal)
 }
 
-func getFristDigit(line string, accending bool) (int, error) {
+func getFristDigit(line string, forward bool) (int, error) {
 	var digit *int
-	forEachRune(line, accending, func(charRune rune) error {
-		foundDigit, err := getDigitIfPresent(charRune)
-		if err != nil {
-			return nil
+	forEachRune(line, forward, func(charRune rune) error {
+		if unicode.IsDigit(charRune) {
+			convertedRune := int(charRune - '0')
+			digit = &convertedRune
 		}
-		digit = &foundDigit
-		return errors.New("Loop finished")
+		if digit != nil {
+			return errors.New("Loop finished")
+		}
+
+		return nil
 	})
 
 	if digit == nil {
@@ -56,13 +59,6 @@ func getFristDigit(line string, accending bool) (int, error) {
 	}
 
 	return *digit, nil
-}
-
-func getDigitIfPresent(charRune rune) (int, error) {
-	if unicode.IsDigit(charRune) {
-		return int(charRune - '0'), nil
-	}
-	return 0, errors.New("Not a digit")
 }
 
 func forEachRune(str string, forward bool, block func(r rune) error) {
