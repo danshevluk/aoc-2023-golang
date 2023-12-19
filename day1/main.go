@@ -65,8 +65,8 @@ func getDigitIfPresent(charRune rune) (int, error) {
 	return 0, errors.New("Not a digit")
 }
 
-func forEachRune(str string, assending bool, block func(r rune) error) {
-	if assending {
+func forEachRune(str string, forward bool, block func(r rune) error) {
+	if forward {
 		for _, charRune := range str {
 			err := block(charRune)
 			if err != nil {
