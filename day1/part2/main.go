@@ -1,4 +1,4 @@
-package main
+package part2
 
 import (
 	"aoc_2023/common"
