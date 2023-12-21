@@ -2,6 +2,7 @@ package main
 
 import (
 	"aoc_2023/common"
+	"errors"
 	"flag"
 	"fmt"
 	"math"
@@ -18,6 +19,41 @@ func main() {
 	fmt.Println("Part 2 solution: ", solvePart2(inputContent))
 }
 
+func numberSetsFromString(numbersString string) ([]int, []int, error) {
+	numberSets := strings.Split(numbersString, "|")
+	if len(numberSets) != 2 {
+		return nil, nil, errors.New("invalid number sets")
+	}
+	numberSetToArray := func(numberSet string) []int {
+		numberSet = strings.TrimSpace(numberSet)
+		if len(numberSet) == 0 {
+			return make([]int, 0)
+		}
+
+		numbersArray := make([]int, 0)
+		for _, number := range strings.Split(numberSet, " ") {
+			number = strings.TrimSpace(number)
+			if len(number) == 0 {
+				continue
+			}
+
+			numberInt, err := strconv.Atoi(number)
+			if err != nil {
+				fmt.Println("Invalid number:", number)
+				continue
+			}
+
+			numbersArray = append(numbersArray, numberInt)
+		}
+
+		return numbersArray
+	}
+
+	winningNumbers := numberSetToArray(numberSets[0])
+	cardNumbers := numberSetToArray(numberSets[1])
+	return winningNumbers, cardNumbers, nil
+}
+
 // Part 1
 
 func solvePart1(input string) int {
@@ -25,45 +61,17 @@ func solvePart1(input string) int {
 
 	gamesListScore := 0
 	for _, line := range lines {
-		lineParts := strings.Split(line, ":")
-		if len(lineParts) != 2 {
+		parts := strings.Split(line, ":")
+		if len(parts) != 2 {
 			fmt.Println("Invalid line:", line)
 			continue
 		}
 
-		numberSets := strings.Split(lineParts[1], "|")
-		if len(numberSets) != 2 {
-			fmt.Println("Invalid number sets:", numberSets)
+		winningNumbers, cardNumbers, err := numberSetsFromString(parts[1])
+		if err != nil {
+			fmt.Println("Failed to extract numbers from string:", parts[1])
 			continue
 		}
-		numberSetToArray := func(numberSet string) []int {
-			numberSet = strings.TrimSpace(numberSet)
-			if len(numberSet) == 0 {
-				return make([]int, 0)
-			}
-
-			numbersArray := make([]int, 0)
-			for _, number := range strings.Split(numberSet, " ") {
-				number = strings.TrimSpace(number)
-				if len(number) == 0 {
-					continue
-				}
-
-				numberInt, err := strconv.Atoi(number)
-				if err != nil {
-					fmt.Println("Invalid number:", number)
-					continue
-				}
-
-				numbersArray = append(numbersArray, numberInt)
-			}
-
-			return numbersArray
-		}
-
-		winningNumbers := numberSetToArray(numberSets[0])
-		cardNumbers := numberSetToArray(numberSets[1])
-
 		foundWinningNumbersCount := 0
 		for _, cardNumber := range cardNumbers {
 			if slices.Contains(winningNumbers, cardNumber) {
@@ -99,38 +107,11 @@ func solvePart2(input string) int {
 			continue
 		}
 
-		numberSets := strings.Split(lineParts[1], "|")
-		if len(numberSets) != 2 {
-			fmt.Println("Invalid number sets:", numberSets)
+		winningNumbers, cardNumbers, err := numberSetsFromString(lineParts[1])
+		if err != nil {
+			fmt.Println("Failed to extract numbers from string:", lineParts[1])
 			continue
 		}
-		numberSetToArray := func(numberSet string) []int {
-			numberSet = strings.TrimSpace(numberSet)
-			if len(numberSet) == 0 {
-				return make([]int, 0)
-			}
-
-			numbersArray := make([]int, 0)
-			for _, number := range strings.Split(numberSet, " ") {
-				number = strings.TrimSpace(number)
-				if len(number) == 0 {
-					continue
-				}
-
-				numberInt, err := strconv.Atoi(number)
-				if err != nil {
-					fmt.Println("Invalid number:", number)
-					continue
-				}
-
-				numbersArray = append(numbersArray, numberInt)
-			}
-
-			return numbersArray
-		}
-
-		winningNumbers := numberSetToArray(numberSets[0])
-		cardNumbers := numberSetToArray(numberSets[1])
 
 		foundWinningNumbersCount := 0
 		for _, cardNumber := range cardNumbers {
