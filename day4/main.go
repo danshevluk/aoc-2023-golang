@@ -138,11 +138,5 @@ func solvePart2(input string) int {
 		}
 	}
 
-	totalNumberOfTickets := 0
-	for _, numberOfTickets := range numberOfTicketsByType {
-		totalNumberOfTickets += numberOfTickets
-
-	}
-
-	return totalNumberOfTickets
+	return common.Sum(numberOfTicketsByType)
 }
